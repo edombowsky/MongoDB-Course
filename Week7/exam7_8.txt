@@ -1,0 +1,169 @@
+http://mosolov.wordpress.com/2012/12/19/mongodb-for-dba-final-exam-question-8-my-answer/
+
+
+MongoDB for DBA. FInal Exam. Question 8. My Answer
+==================================================
+Final: Final.8
+
+We have been asked by our users to pull some data from a previous database
+backup of a sharded cluster. They’d like us to set up a temporary data mart for
+this purpose, in addition to answering some questions from the data. The next
+few questions involve this user request.
+
+First we will restore the backup. Download gene_backup.zip from the education
+site. Unzip this to a temp location on your computer.
+
+The original cluster that was backed up consisted of two shards, each of which
+was a three member replica set. The first one named “s1″ and the second “s2″.
+We have one mongodump (backup) for each shard, plus one of one of the config
+databases. After you unzip you will see something like this:
+
+$ ls -la bak
+total 0
+drwxr-xr-x   5 dwight  staff  170 Dec 11 13:47 .
+drwxr-xr-x  17 dwight  staff  578 Dec 11 13:49 ..
+drwxr-xr-x   4 dwight  staff  136 Dec 11 13:45 config_server
+drwxr-xr-x   5 dwight  staff  170 Dec 11 13:46 s1
+drwxr-xr-x   5 dwight  staff  170 Dec 11 13:46 s2
+
+Our data mart will be temporary, so we won’t need more than one mongod per
+shard, nor more than one config server (we are not worried about downtime, the
+mart is temporary).
+
+As a first step, restore the config server backup and run a mongod config server
+instance with that restored data. The backups were made with mongodump. Thus you
+ will use the mongorestore utility to restore.
+
+Once you have the config server running, confirm the restore of the config
+server data by running the last javascript line below in the mongo shell, and
+entering the 4 digit result it returns.
+
+$ mongo localhost:27019/config
+configsvr>
+configsvr> db
+config
+configsvr> db.chunks.find().sort({_id:1}).next().lastmodEpoch.toString().substr(20,4)
+
+I never use mongorestore before. Just one thing which should keep in mind – run
+config server before run mongorestore.
+
+denis@denis-home:~/mongodb/dba/8$ mongod --configsvr --dbpath db/conf --port 27019
+
+I started mongorestore commands when config server was running. I didn’t know
+how to restore two databases into 1 command. I used two separate command. The
+first for database ‘admin’ and the second for ‘config’. I just added –verbose
+flag to got rich output.
+
+denis@denis-home:~/mongodb/dba/8$ mongorestore --verbose --host localhost --port 27019 --db admin --drop config_server/admin
+Thu Dec 20 00:01:47 creating new connection to:localhost:27019
+Thu Dec 20 00:01:47 BackgroundJob starting: ConnectBG
+Thu Dec 20 00:01:47 connected connection!
+connected to: localhost:27019
+Thu Dec 20 00:01:47 config_server/admin/system.users.bson
+Thu Dec 20 00:01:47     going into namespace [admin.system.users]
+Thu Dec 20 00:01:47      file size: 99
+1 objects found
+Thu Dec 20 00:01:47     Creating index: { key: { _id: 1 }, ns: "admin.system.users", name: "_id_" }
+denis@denis-home:~/mongodb/dba/8$ mongorestore --verbose --host localhost --port 27019 --db config --drop config_server/config
+Thu Dec 20 00:03:25 creating new connection to:localhost:27019
+Thu Dec 20 00:03:25 BackgroundJob starting: ConnectBG
+Thu Dec 20 00:03:25 connected connection!
+connected to: localhost:27019
+Thu Dec 20 00:03:25 config_server/config/databases.bson
+Thu Dec 20 00:03:25     going into namespace [config.databases]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 205
+4 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.databases", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/collections.bson
+Thu Dec 20 00:03:25     going into namespace [config.collections]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 112
+1 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.collections", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/settings.bson
+Thu Dec 20 00:03:25     going into namespace [config.settings]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 35
+1 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.settings", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/version.bson
+Thu Dec 20 00:03:25     going into namespace [config.version]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 27
+1 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.version", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/chunks.bson
+Thu Dec 20 00:03:25     going into namespace [config.chunks]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 322
+2 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.chunks", name: "_id_" }
+Thu Dec 20 00:03:25     Creating index: { key: { ns: 1, min: 1 }, unique: true, ns: "config.chunks", name: "ns_1_min_1" }
+Thu Dec 20 00:03:25     Creating index: { key: { ns: 1, shard: 1, min: 1 }, unique: true, ns: "config.chunks", name: "ns_1_shard_1_min_1" }
+Thu Dec 20 00:03:25     Creating index: { key: { ns: 1, lastmod: 1 }, unique: true, ns: "config.chunks", name: "ns_1_lastmod_1" }
+Thu Dec 20 00:03:25 config_server/config/mongos.bson
+Thu Dec 20 00:03:25     going into namespace [config.mongos]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 60
+1 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.mongos", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/shards.bson
+Thu Dec 20 00:03:25     going into namespace [config.shards]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 168
+2 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.shards", name: "_id_" }
+Thu Dec 20 00:03:25     Creating index: { key: { host: 1 }, unique: true, ns: "config.shards", name: "host_1" }
+Thu Dec 20 00:03:25 config_server/config/locks.bson
+Thu Dec 20 00:03:25     going into namespace [config.locks]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 408
+2 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.locks", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/lockpings.bson
+Thu Dec 20 00:03:25     going into namespace [config.lockpings]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25      file size: 181
+3 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.lockpings", name: "_id_" }
+Thu Dec 20 00:03:25     Creating index: { key: { ping: 1 }, ns: "config.lockpings", name: "ping_1" }
+Thu Dec 20 00:03:25 config_server/config/changelog.bson
+Thu Dec 20 00:03:25     going into namespace [config.changelog]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25     Created collection config.changelog with options: { "create" : "changelog", "size" : 10485760, "capped" : true }
+Thu Dec 20 00:03:25      file size: 1510
+5 objects found
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.changelog", name: "_id_" }
+Thu Dec 20 00:03:25 config_server/config/tags.bson
+Thu Dec 20 00:03:25     going into namespace [config.tags]
+Thu Dec 20 00:03:25      dropping
+Thu Dec 20 00:03:25 file config_server/config/tags.bson empty, skipping
+Thu Dec 20 00:03:25     Creating index: { key: { _id: 1 }, ns: "config.tags", name: "_id_" }
+Thu Dec 20 00:03:25     Creating index: { key: { ns: 1, min: 1 }, unique: true, ns: "config.tags", name: "ns_1_min_1" }
+It seemed it worked fine. Final checking:
+
+denis@denis-home:~/mongodb/dba/8$ mongo localhost:27019/config
+MongoDB shell version: 2.2.2
+connecting to: localhost:27019/config
+configsvr> db
+config
+configsvr> db.chunks.find().sort({_id:1}).next().lastmodEpoch.toString().substr(20,4)
+6554
+
+
+
+Comments on «MongoDB for DBA. FInal Exam. Question 8. My Answer »
+=================================================================
+
+ Enigma
+December 19, 2012 at 20:36
+And you can have all the answers to the PM - email?
+
+Thank you!
+
+Reply
+ mosolov
+December 20, 2012 at 18:56
+Now I learned that you can vosstanavlait config server:
+mongorestore. / config_server-host 127.0.0.1:27019

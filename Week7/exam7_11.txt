@@ -1,0 +1,18 @@
+http://mosolov.wordpress.com/2012/12/19/mongodb-for-dbas-final-exam-question-11-my-answer/
+
+MongoDB for DBA’s. Final Exam. Question 11. My Answer
+=====================================================
+Final: Final.11
+
+Grab problem11.json from the education site. Import it into a mongo database
+(the cluster from the last problem will work fine but an empty configuration
+will work as well):
+
+mongoimport -d snps -c problem11 problem11.json
+
+Now, using the aggregation framework, answer the question: how many unique
+N2/mutant pairs are there in this collection? (Assume the values as case
+sensitive – so ‘a’ and ‘A’ are different values for uniqueness purposes.)
+
+mongos> db.elegans.aggregate([ {$group: { _id: { N2: "$N2", mutant: "$mutant" } }} ]).result.length
+It shows me 31

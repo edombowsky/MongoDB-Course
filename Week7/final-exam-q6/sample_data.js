@@ -1,0 +1,4 @@
+{"_id": 0, "first_name" : "John1", "last_name" : "Doe1", "residence_hall" : "Fairweather", "has_car" : true, "student_id" : "2348023902", "current_classes" : ["His343", "Math234", "Phy123", "Art232"]}
+{"_id": 1, "first_name" : "John2", "last_name" : "Doe2", "residence_hall" : "Fairweather", "has_car" : true, "student_id" : "2348023902", "current_classes" : ["His343", "Math234", "Phy123", "Art232"]}
+{"_id": 3, "first_name" : "John3", "last_name" : "Doe3", "residence_hall" : "Fairweather", "has_car" : true, "student_id" : "2348023902", "current_classes" : ["His343", "Math234", "Phy123", "Art232"]}
+{"_id": 4, "first_name" : "John4", "last_name" : "Doe4", "residence_hall" : "Fairweather", "has_car" : true, "student_id" : "2348023902", "current_classes" : ["His343", "Math234", "Phy123", "Art232"]}

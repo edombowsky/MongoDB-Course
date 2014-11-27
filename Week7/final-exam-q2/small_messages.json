@@ -1,0 +1,8 @@
+{"from":"ann","to":["bob","carl","dan","bob","dan"]}
+{"from":"bob","to":["ann","emily","ann"]}
+{"from":"bob","to":["ann","ann","ann"]}
+{"from":"carl","to":["emily","bob","bob"]}
+{"from":"dan","to":["carl","carl"]}
+{"from":"emily","to":["ann","dan","bob","dan"]}
+{"from":"ann","to":["bob","dan"]}
+{"from":"bob","to":["emily","ann","dan","ann","ann"]}

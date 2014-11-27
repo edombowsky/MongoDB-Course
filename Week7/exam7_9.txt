@@ -1,0 +1,114 @@
+http://mosolov.wordpress.com/2012/12/19/mongodb-for-dbas-final-exam-question-9-my-answer/
+
+
+Mongodb for DBA’s. Final Exam. Question 9. My Answer.
+=====================================================
+Final: Final.9
+
+Now that the config server from question #8 is up and running, we will restore
+the two shards (“s1″ and “s2″).
+
+Use mongorestore to restore the data for each shard. The shards were mongodump’d
+with the –oplog option, so you will want to use –oplogReplay on your
+mongorestore command line on each of these restores (note we didn’t use that for
+the config server restore as config servers are not replica sets).
+
+If we inspect our restored config db, we see this in db.shards:
+
+~/dba/final $ mongo localhost:27019/config
+MongoDB shell version: 2.2.0
+connecting to: localhost:27019/config
+configsvr> db.shards.find()
+{ "_id" : "s1", "host" : "s1/genome_svr1:27501,genome_svr2:27502,genome_svr2:27503" }
+{ "_id" : "s2", "host" : "s2/genome_svr4:27601,genome_svr5:27602,genome_svr5:27603" }
+
+From this we know when we run a mongos for the cluster, it will expect the first
+shard to be a replica set named “s1″, and the second to be a replica set named
+“s2″, and also to be able to be able to resolve and connect to at least one of
+the seed hostnames for each shard. If we were restoring this cluster as
+“itself”, it would be best to assign the hostnames “genome_svr1″ etc. to the
+appropriate IP addresses in DNS, and not change config.shard. However, for
+this problem, our job is not to restore the cluster, but rather to create a
+new temporary datamart initialized with this dataset.
+
+Thus instead we will update the config.shards metadata to point to the locations
+of our new shard servers. Update the config.shards collection such that your
+output is:
+
+configsvr> db.shards.find()
+{ "_id" : "s1", "host" : "localhost:27501" }
+{ "_id" : "s2", "host" : "localhost:27601" }
+configsvr>
+
+Be sure when you do this nothing is running except the single config server.
+mongod and mongos processes cache metadata, so this is important. After the
+update restart the config server itself for the same reason.
+
+Ok. At this point my config server is running. (See my previous post). I didn’t
+restore ‘s1′ and ‘s2′ yet. Let’s connect to config server and do straightforward
+updating(remove + insert).
+
+denis@denis-home:~/mongodb/dba/8$ mongo localhost:27019/config
+MongoDB shell version: 2.2.2
+connecting to: localhost:27019/config
+configsvr> db.shards.find()
+{ "_id" : "s1", "host" : "s1/genome_svr1:27501,genome_svr2:27502,genome_svr2:27503" }
+{ "_id" : "s2", "host" : "s2/genome_svr4:27601,genome_svr5:27602,genome_svr5:27603" }
+configsvr> rs.remove("s1/genome_svr1:27501,genome_svr2:27502,genome_svr2:27503")
+configsvr> db.shards.remove()
+configsvr> db.shards.save({ "_id" : "s1", "host" : "localhost:27501" })
+configsvr> db.shards.save({ "_id" : "s2", "host" : "localhost:27601" })
+configsvr> db.shards.find()
+{ "_id" : "s1", "host" : "localhost:27501" }
+{ "_id" : "s2", "host" : "localhost:27601" }
+
+Be sure when you do this nothing is running except the single config server.
+mongod and mongos processes cache metadata, so this is important. After the
+update restart the config server itself for the same reason.
+
+Now start a mongod for each shard — one on port 27501 for shard “s1″ and on
+port 27601 for shard “s2″. At this point if you run ps you should see three
+mongod’s — one for each shard, and one for our config server. Note they need
+not be replica sets, but just regular mongod’s, as we did not begin our host
+string in config.shards with setname/.
+
+Restart the config server. After that let’s restore ‘s1′ and ‘s2′ dumps.
+
+denis@denis-home:~/mongodb/dba/8$ mongorestore --oplogReplay --verbose --host localhost --port 27501 --dbpath db/s1 --drop s1
+denis@denis-home:~/mongodb/dba/8$ mongorestore --oplogReplay --verbose --host localhost --port 27601 --dbpath db/s2 --drop s2
+
+I run it in different terminal tabs, but you can use –fork option.
+
+denis@denis-home:~/mongodb/dba/8$ mongodb --shardsvr --dbpath db/s1 --port 27501
+denis@denis-home:~/mongodb/dba/8$ mongodb --shardsvr --dbpath db/s2 --port 27601
+Now start a mongos for the cluster. Connect to the mongos with a mongo shell. Run this:
+
+> use snps
+> db.elegans.aggregate([{$match:{N2:"T"}},{$group:{_id:"$N2",n:{$sum:1}}}]).result[0].n
+Connecting to mongos, checking shard status and getting the answer:
+
+denis@denis-home:~/mongodb/dba/8$ mongos --configdb localhost:27019
+denis@denis-home:~/mongodb/dba/8$ mongo
+MongoDB shell version: 2.2.2
+connecting to: test
+mongos> sh.status()
+--- Sharding Status ---
+  sharding version: { "_id" : 1, "version" : 3 }
+  shards:
+    {  "_id" : "s1",  "host" : "localhost:27501" }
+    {  "_id" : "s2",  "host" : "localhost:27601" }
+  databases:
+    {  "_id" : "admin",  "partitioned" : false,  "primary" : "config" }
+    {  "_id" : "readings",  "partitioned" : true,  "primary" : "s1" }
+    {  "_id" : "snps",  "partitioned" : true,  "primary" : "s1" }
+        snps.elegans chunks:
+                s2  1
+                s1  1
+            { "snp" : { $minKey : 1 } } -->> { "snp" : "haw54524" } on : s2 Timestamp(2000, 0)
+            { "snp" : "haw54524" } -->> { "snp" : { $maxKey : 1 } } on : s1 Timestamp(2000, 1)
+    {  "_id" : "test",  "partitioned" : false,  "primary" : "s1" }
+
+mongos> use snps
+switched to db snps
+mongos> db.elegans.aggregate([{$match:{N2:"T"}},{$group:{_id:"$N2",n:{$sum:1}}}]).result[0].n
+47664

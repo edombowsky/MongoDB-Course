@@ -1,0 +1,83 @@
+MongoDB shell version: 2.4.1
+connecting to: test
+switched to db enron
+{
+	"result" : [
+		{
+			"_id" : ObjectId("4f16fdfcd1e2d3237106c4ff"),
+			"body" : "Jeff:\n\nI have a major problem with Ben Glisan being deleted, especially without a chance to comment.  I believe he is as critical to the organization as all of the \"tier two\" members (and has had a larger p/l contribution).  If you disagree, I need to know so I can appropriately set his expectations.  I look at this list and I cannot discern the standard for inclusion.  This standard must be clear and will be closely watched by all employees.\n\nAndy\n\n -----Original Message-----\nFrom: \tSera, Sherri  \nSent:\tTuesday, June 26, 2001 2:47 PM\nTo:\tHorton, Stanley; Rice, Ken; Hannon, Kevin; Sherriff, John; Delainey, David; Whalley, Greg; Frevert, Mark; Kean, Steven; Fastow, Andrew; Derrick Jr., James; Causey, Richard; Lay, Kenneth\nCc:\tKanouff, Erin; Oxley, David; Williamson, Joannie\nSubject:\tRE: MD PRC Committee\n\nBased on feedback Jeff received from the communication yesterday, the list of additional MD PRC members has been narrowed somewhat.  Below is a list of individuals that will be invited to join the MD PRC meeting on Tuesday, July 24:\n\nRay Bowen\nMichael Brown\nRick Buy\nDavid Cox\nJanet Dietrich\nJim Fallon\nLouise Kitchen\nJohn Lavorato\nDan Leff\nDan McCarty\nMike McConnell\nJeff McMahon\nGreg Piper\nJeff Shankman",
+			"filename" : "283.",
+			"headers" : {
+				"Content-Transfer-Encoding" : "7bit",
+				"Content-Type" : "text/plain; charset=us-ascii",
+				"Date" : ISODate("2001-06-26T22:37:11Z"),
+				"From" : "andrew.fastow@enron.com",
+				"Message-ID" : "<13977532.1075852653604.JavaMail.evans@thyme>",
+				"Mime-Version" : "1.0",
+				"Subject" : "FW: MD PRC Committee",
+				"To" : "jeff.skilling@enron.com",
+				"X-FileName" : "JSKILLIN (Non-Privileged).pst",
+				"X-Folder" : "\\JSKILLIN (Non-Privileged)\\Deleted Items",
+				"X-From" : "Fastow, Andrew </O=ENRON/OU=NA/CN=RECIPIENTS/CN=AFASTOW>",
+				"X-Origin" : "Skilling-J",
+				"X-To" : "Skilling, Jeff </O=ENRON/OU=NA/CN=RECIPIENTS/CN=Jskillin>",
+				"X-bcc" : "",
+				"X-cc" : ""
+			},
+			"mailbox" : "skilling-j",
+			"subFolder" : "deleted_items"
+		},
+		{
+			"_id" : ObjectId("4f16fdfcd1e2d3237106c574"),
+			"body" : "Nothing to do except things like this when you're trapped inside by a flood.\n\n ",
+			"filename" : "397.",
+			"headers" : {
+				"Bcc" : "steven.kean@enron.com",
+				"Cc" : "steven.kean@enron.com",
+				"Content-Transfer-Encoding" : "7bit",
+				"Content-Type" : "text/plain; charset=us-ascii",
+				"Date" : ISODate("2001-06-11T01:01:24Z"),
+				"From" : "andrew.fastow@enron.com",
+				"Message-ID" : "<30020448.1075852656682.JavaMail.evans@thyme>",
+				"Mime-Version" : "1.0",
+				"Subject" : "Op Ed satire",
+				"To" : "jeff.skilling@enron.com",
+				"X-FileName" : "JSKILLIN (Non-Privileged).pst",
+				"X-Folder" : "\\JSKILLIN (Non-Privileged)\\Deleted Items",
+				"X-From" : "Fastow, Andrew </O=ENRON/OU=NA/CN=RECIPIENTS/CN=AFASTOW>",
+				"X-Origin" : "Skilling-J",
+				"X-To" : "Skilling, Jeff </O=ENRON/OU=NA/CN=RECIPIENTS/CN=Jskillin>",
+				"X-bcc" : "",
+				"X-cc" : "Kean, Steven </O=ENRON/OU=NA/CN=RECIPIENTS/CN=Notesaddr/cn=b86dc838-ecafdc13-8625693c-57fa6d>"
+			},
+			"mailbox" : "skilling-j",
+			"subFolder" : "deleted_items"
+		},
+		{
+			"_id" : ObjectId("4f16fdfed1e2d3237106ccb3"),
+			"body" : "Jeff:\n\nI'm sure this is just a \"misunderstanding\", but I know that UBS Capital has spent innumerable hours with management.  While Mark says that he doesn't want LJM to have an advantage, it looks like LJM is being put at a disadvantage.  You would think that Cliff and Mark would welcome a new bidder with open arms after failing to sell this business for 2+ years.  Until this is resolved, I'll assume that LJM is out of the bidding and will not do any further work.  Enron is back to one bidder (the lower one) -- better for our company ???\n\nAndy\n -----Original Message-----\nFrom: \tUmanoff, Adam  \nSent:\tMonday, April 16, 2001 1:58 AM\nTo:\tFastow, Andrew S.\nSubject:\tMonday Meeting\n\nAndy - Mark Metts called tonight and has asked me not to meet with you in Houston tomorrow.  His stated concern is over disparate/more favorable treatment of you (LJM) as opposed to other bidders for EWC.  As we have discussed, while I am very interested in an LJM financed MBO, at this stage I need you to sort out any process issues with Cliff/Mark and/or Jeff.  Let's meet as soon as that gets worked out.  In the meantime, I won't travel to Houston Monday but will call to chat.  Thanks. Adam",
+			"filename" : "4.",
+			"headers" : {
+				"Content-Transfer-Encoding" : "7bit",
+				"Content-Type" : "text/plain; charset=us-ascii",
+				"Date" : ISODate("2001-04-16T19:25:00Z"),
+				"From" : "andrew.fastow@enron.com",
+				"Message-ID" : "<32885718.1075840149428.JavaMail.evans@thyme>",
+				"Mime-Version" : "1.0",
+				"Subject" : "FW: Monday Meeting",
+				"To" : "jeff.skilling@enron.com",
+				"X-FileName" : "jskillin.pst",
+				"X-Folder" : "\\jskillin\\Inbox",
+				"X-From" : "Andrew S Fastow",
+				"X-Origin" : "SKILLING-J",
+				"X-To" : "Jeff Skilling <Jeff Skilling/Corp/Enron@ENRON>",
+				"X-bcc" : "",
+				"X-cc" : ""
+			},
+			"mailbox" : "skilling-j",
+			"subFolder" : "inbox"
+		}
+	],
+	"ok" : 1
+}
+bye

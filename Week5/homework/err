@@ -1,0 +1,195 @@
+MongoDB shell version: 2.4.1
+connecting to: test
+switched to db grades
+{
+	"result" : [
+		{
+			"_id" : {
+				"class_id" : 2
+			},
+			"classGPA" : 37.61742117387635
+		},
+		{
+			"_id" : {
+				"class_id" : 12
+			},
+			"classGPA" : 40.62345969481146
+		},
+		{
+			"_id" : {
+				"class_id" : 8
+			},
+			"classGPA" : 41.303883810000194
+		},
+		{
+			"_id" : {
+				"class_id" : 28
+			},
+			"classGPA" : 41.59824801397288
+		},
+		{
+			"_id" : {
+				"class_id" : 30
+			},
+			"classGPA" : 42.71200726236121
+		},
+		{
+			"_id" : {
+				"class_id" : 18
+			},
+			"classGPA" : 43.40692681712816
+		},
+		{
+			"_id" : {
+				"class_id" : 22
+			},
+			"classGPA" : 43.4776054208968
+		},
+		{
+			"_id" : {
+				"class_id" : 25
+			},
+			"classGPA" : 43.99882003240129
+		},
+		{
+			"_id" : {
+				"class_id" : 21
+			},
+			"classGPA" : 45.41539323359457
+		},
+		{
+			"_id" : {
+				"class_id" : 15
+			},
+			"classGPA" : 47.2200946663058
+		},
+		{
+			"_id" : {
+				"class_id" : 10
+			},
+			"classGPA" : 47.663462173280614
+		},
+		{
+			"_id" : {
+				"class_id" : 6
+			},
+			"classGPA" : 48.414852429568235
+		},
+		{
+			"_id" : {
+				"class_id" : 7
+			},
+			"classGPA" : 48.87708798013475
+		},
+		{
+			"_id" : {
+				"class_id" : 29
+			},
+			"classGPA" : 49.305440602697246
+		},
+		{
+			"_id" : {
+				"class_id" : 11
+			},
+			"classGPA" : 49.952812365344215
+		},
+		{
+			"_id" : {
+				"class_id" : 27
+			},
+			"classGPA" : 50.58111308566053
+		},
+		{
+			"_id" : {
+				"class_id" : 19
+			},
+			"classGPA" : 50.59071928635092
+		},
+		{
+			"_id" : {
+				"class_id" : 0
+			},
+			"classGPA" : 50.6431769584895
+		},
+		{
+			"_id" : {
+				"class_id" : 3
+			},
+			"classGPA" : 51.7742498662982
+		},
+		{
+			"_id" : {
+				"class_id" : 23
+			},
+			"classGPA" : 51.93284830763039
+		},
+		{
+			"_id" : {
+				"class_id" : 17
+			},
+			"classGPA" : 52.42469177746091
+		},
+		{
+			"_id" : {
+				"class_id" : 4
+			},
+			"classGPA" : 52.65541561065859
+		},
+		{
+			"_id" : {
+				"class_id" : 13
+			},
+			"classGPA" : 52.738286239952366
+		},
+		{
+			"_id" : {
+				"class_id" : 16
+			},
+			"classGPA" : 53.45833539362425
+		},
+		{
+			"_id" : {
+				"class_id" : 24
+			},
+			"classGPA" : 53.6103459780166
+		},
+		{
+			"_id" : {
+				"class_id" : 14
+			},
+			"classGPA" : 55.36017373346247
+		},
+		{
+			"_id" : {
+				"class_id" : 9
+			},
+			"classGPA" : 55.56861693456624
+		},
+		{
+			"_id" : {
+				"class_id" : 26
+			},
+			"classGPA" : 56.06918278769095
+		},
+		{
+			"_id" : {
+				"class_id" : 20
+			},
+			"classGPA" : 57.6309834548989
+		},
+		{
+			"_id" : {
+				"class_id" : 5
+			},
+			"classGPA" : 58.084487676135495
+		},
+		{
+			"_id" : {
+				"class_id" : 1
+			},
+			"classGPA" : 64.50642324269175
+		}
+	],
+	"ok" : 1
+}
+bye

@@ -1,0 +1,66 @@
+http://mosolov.wordpress.com/2012/12/14/mongodb-for-developers-final-exam-question-6-my-answer/
+
+
+MongoDB for Developers. Final Exam. Question 6. My Answer
+=========================================================
+
+Final: Question 6
+Suppose you have a collection of students of the following form:
+
+{
+    "_id" : ObjectId("50c598f582094fb5f92efb96"),
+    "first_name" : "John",
+    "last_name" : "Doe",
+    "date_of_admission" : ISODate("2010-02-21T05:00:00Z"),
+    "residence_hall" : "Fairweather",
+    "has_car" : true,
+    "student_id" : "2348023902",
+    "current_classes" : [
+        "His343",
+        "Math234",
+        "Phy123",
+        "Art232"
+    ]
+}
+
+Now suppose that basic inserts into the collection, which only include the last
+name, first name and student_id, are too slow. What could potentially improve
+the speed of inserts. Check all that apply:
+
+Add an index on last_name, first_name if one does not already exist.
+Set w=0, j=0 on writes
+Remove all indexes from the collection
+Provide a hint to MongoDB that it should not use an index for the inserts
+Build a replica set and insert data into the secondary nodes to free up the primary nodes.
+
+Add an index on last_name, first_name if one does not already exist.
+Can not be right because we are talking about inserts.
+MongoDB Reads vs Writes summary
+
+Remove all indexes from the collection.
+Sounds good. Updating of indexes gives the most overhead for insert operations.
+
+Set w=0, j=0 on writes.
+Sounds good. It decrease overhead for each insert.
+
+Provide a hint to MongoDB that it should not use an index for the inserts.
+Sounds strange. I never heart about this. Let’s say skip for now.
+
+Build a replica set and insert data into the secondary nodes to free up the primary nodes.
+Can not be right. We have no possibility to insert data to secondary nodes.
+
+
+
+Comments on «MongoDB for Developers. Final Exam. Question 6. My Answer »
+========================================================================
+
+ moq6
+March 6th, 2013 at 20:12
+https://groups.google.com/forum/?fromgroups = #! topic/mongodb-user/YJy9rrsNh2c
+
+Reply
+ moq6
+March 6th, 2013 at 20:16
+Sorry, there's no such hint (no hint at all) for insert operation, so it won't work.
+
+Reply

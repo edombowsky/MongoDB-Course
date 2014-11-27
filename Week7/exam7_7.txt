@@ -1,0 +1,168 @@
+http://mosolov.wordpress.com/2012/12/15/mongodb-for-developers-final-exam-question-7-my-answer/
+
+
+MongoDB for Developers. Final Exam. Question 7. My Answer
+=========================================================
+Final: Question 7
+You have been tasked to cleanup a photosharing database. The database consists
+of two collections, albums, and images. Every image is supposed to be in an
+album, but there are orphan images that appear in no album. Here are some
+example documents (not from the collections you will be downloading).
+
+> db.albums.findOne()
+{
+    "_id" : 67
+    "images" : [
+        4745,
+        7651,
+        15247,
+        17517,
+        17853,
+        20529,
+        22640,
+        27299,
+        27997,
+        32930,
+        35591,
+        48969,
+        52901,
+        57320,
+        96342,
+        99705
+    ]
+}
+
+> db.images.findOne()
+{ "_id" : 99705, "height" : 480, "width" : 640 }
+From the above, you can conclude that the image with _id = 99705 is in album 67.
+It is not an orphan.
+
+Your task is to write a program to remove every image from the images collection
+that appears in no album. Or put another way, if an image does not appear in at
+least one album, it’s an orphan and should be removed from the images collection.
+
+Start by using mongoimport to import your albums.json and images.json
+collections. (Did you notice the links in the previous sentence?)
+When you are done removing the orphan images from the collection, there should
+be 90,038 documents in the images collection. To prove you did it correctly,
+what is the sum of the _id fields from the images collection (you can get this
+by writing an aggregation query).
+
+I just wrote it using JavaScript and executed in mongoshell. I realized
+straightforward algorithm and it worked slow. I suppose other developers can
+find more faster solution and share it with me.
+
+function filter(image) {
+    if (db.albums.count({'images': image._id}) == 0)
+    {
+        db.images.remove({'_id': image._id});
+    }
+};
+
+function map() {
+    emit('_id', this._id);
+}
+
+function reduce(key, values) {
+    var result = 0;
+    if (key === '_id') {
+        for(var i = 0; i < values.length; i++)
+        {
+            result += values[i];
+        }
+    }
+    return result;
+}
+
+db.images.find().forEach(filter);
+db.images.mapReduce(map, reduce, {out: {inline: 1}});
+
+It gave the following answer:
+
+{
+    "results" : [
+        {
+            "_id" : "_id",
+            "value" : 4499664274
+        }
+    ],
+    "timeMillis" : 1090,
+    "counts" : {
+        "input" : 90038,
+        "emit" : 90038,
+        "reduce" : 91,
+        "output" : 1
+    },
+    "ok" : 1,
+}
+
+
+
+Comments on «MongoDB for DBA. FInal Exam. Question 7. My Answer »
+==================================================================
+
+ Vlad
+December 16, 2012 at 12:24
+so much faster and easier
+
+db.albums.aggregate (
+{$unwind: "$images"},
+{$group: {
+_id: null,
+sum: {$sum: '$images'},
+count: {$sum: 1}
+}
+}
+)
+
+Reply
+ mosolov
+December 16, 2012 at 13:56
+Thanks for the help
+
+Reply
+ mndb
+December 16, 2012 at 19:57
+had to close the comments password)
+
+Reply
+ Alexey
+December 17, 2012 at 11:46
+db.albums.ensureIndex ({'images': 1})
+then remove quickly pass ...
+
+Reply
+ No one
+December 17, 2012 at 15:19
+Google keeps a record in the cache before they are concealed. So if anyone
+should see the cache of search engine for your desired items.
+
+Reply
+ Enigma
+December 17, 2012 at 20:30
+Thank you,
+
+I generally do Mongo for DBA's ;)
+You lay out for the exam "Mongo for DBA's" too?
+I would be very grateful for that!
+By the way what the password?
+
+Reply
+ mosolov
+December 18, 2012 at 07:41
+The password was: please
+Now everything is opened.
+For DBA'a I have not done. Today or tomorrow night'll do.
+
+Reply
+ Enigma
+December 18, 2012 at 12:07
+Thank you very much.
+Zhdems for DBA ;)
+
+Reply
+ Dan
+December 19, 2012 at 12:13
+The class
+Yes yes, the exam for DBA!!!
+Pleeeease!!!

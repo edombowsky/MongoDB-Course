@@ -1,0 +1,263 @@
+http://mosolov.wordpress.com/2012/12/14/mongodb-for-developers-final-exam-question-5-my-answer/
+
+MongoDB for Developers. Final Exam. Question 5. My Answer
+=========================================================
+Final: Question 5
+Suppose your have a collection fubar with the following indexes created:
+
+[
+    {
+        "v" : 1,
+        "key" : {
+            "_id" : 1
+        },
+        "ns" : "test.fubar",
+        "name" : "_id_"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "a" : 1,
+            "b" : 1
+        },
+        "ns" : "test.fubar",
+        "name" : "a_1_b_1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "a" : 1,
+            "c" : 1
+        },
+        "ns" : "test.fubar",
+        "name" : "a_1_c_1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "c" : 1
+        },
+        "ns" : "test.fubar",
+        "name" : "c_1"
+    },
+    {
+        "v" : 1,
+        "key" : {
+            "a" : 1,
+            "b" : 1,
+            "c" : -1
+        },
+        "ns" : "test.fubar",
+        "name" : "a_1_b_1_c_-1"
+    }
+]
+
+Now suppose you want to run the following query against the collection.
+
+db.fubar.find({'a':{'$lt':10000}, 'b':{'$gt': 5000}}, {'a':1, 'c':1}).sort({'c':-1})
+Which of the following indexes could be used by MongoDB to assist in answering the query?
+
+_id_
+a_1_b_1
+a_1_c_1
+c_1
+a_1_b_1_c_-1
+
+For this question I’ve prepared the demonstration script, called 5.js:
+
+for(i = 1; i < 100000; i++) {
+    db.fubar.save({
+        a: parseInt(Math.random() * 100000),
+        b: parseInt(Math.random() * 100000),
+        c: parseInt(Math.random() * 100000)
+    });
+}
+db.fubar.ensureIndex({a:1, b:1})
+db.fubar.ensureIndex({a:1, c:1})
+db.fubar.ensureIndex({c:1})
+db.fubar.ensureIndex({a:1, b:1, c:-1})
+Pushed it to MongoDB by following command:
+
+denis@denis-home:~/mongodb/5$ /usr/local/mongodb-2.2.0/bin/mongo fubar --shell 5.js
+I used explain() and hint() methods to check each index. There are the results:
+
+> db.fubar.find({'a':{'$lt':10000}, 'b':{'$gt': 5000}}, {'a':1, 'c':1}).sort({'c':-1}).hint('_id_').explain()
+{
+    "cursor" : "BtreeCursor _id_",
+    "isMultiKey" : false,
+    "n" : 9571,
+    "nscannedObjects" : 99999,
+    "nscanned" : 99999,
+    "nscannedObjectsAllPlans" : 99999,
+    "nscannedAllPlans" : 99999,
+    "scanAndOrder" : true,
+    "indexOnly" : false,
+    "nYields" : 0,
+    "nChunkSkips" : 0,
+    "millis" : 157,
+    "indexBounds" : {
+        "_id" : [
+            [
+                {
+                    "$minElement" : 1
+                },
+                {
+                    "$maxElement" : 1
+                }
+            ]
+        ]
+    },
+    "server" : "denis-home:27017"
+}
+> db.fubar.find({'a':{'$lt':10000}, 'b':{'$gt': 5000}}, {'a':1, 'c':1}).sort({'c':-1}).hint('a_1_b_1').explain()
+{
+    "cursor" : "BtreeCursor a_1_b_1",
+    "isMultiKey" : false,
+    "n" : 9571,
+    "nscannedObjects" : 9571,
+    "nscanned" : 10074,
+    "nscannedObjectsAllPlans" : 9571,
+    "nscannedAllPlans" : 10074,
+    "scanAndOrder" : true,
+    "indexOnly" : false,
+    "nYields" : 0,
+    "nChunkSkips" : 0,
+    "millis" : 68,
+    "indexBounds" : {
+        "a" : [
+            [
+                -1.7976931348623157e+308,
+                10000
+            ]
+        ],
+        "b" : [
+            [
+                5000,
+                1.7976931348623157e+308
+            ]
+        ]
+    },
+    "server" : "denis-home:27017"
+}
+> db.fubar.find({'a':{'$lt':10000}, 'b':{'$gt': 5000}}, {'a':1, 'c':1}).sort({'c':-1}).hint('a_1_c_1').explain()
+{
+    "cursor" : "BtreeCursor a_1_c_1",
+    "isMultiKey" : false,
+    "n" : 9571,
+    "nscannedObjects" : 10092,
+    "nscanned" : 10092,
+    "nscannedObjectsAllPlans" : 10092,
+    "nscannedAllPlans" : 10092,
+    "scanAndOrder" : true,
+    "indexOnly" : false,
+    "nYields" : 0,
+    "nChunkSkips" : 0,
+    "millis" : 67,
+    "indexBounds" : {
+        "a" : [
+            [
+                -1.7976931348623157e+308,
+                10000
+            ]
+        ],
+        "c" : [
+            [
+                {
+                    "$minElement" : 1
+                },
+                {
+                    "$maxElement" : 1
+                }
+            ]
+        ]
+    },
+    "server" : "denis-home:27017"
+}
+> db.fubar.find({'a':{'$lt':10000}, 'b':{'$gt': 5000}}, {'a':1, 'c':1}).sort({'c':-1}).hint('c_1').explain()
+{
+    "cursor" : "BtreeCursor c_1 reverse",
+    "isMultiKey" : false,
+    "n" : 9571,
+    "nscannedObjects" : 99999,
+    "nscanned" : 99999,
+    "nscannedObjectsAllPlans" : 99999,
+    "nscannedAllPlans" : 99999,
+    "scanAndOrder" : false,
+    "indexOnly" : false,
+    "nYields" : 0,
+    "nChunkSkips" : 0,
+    "millis" : 120,
+    "indexBounds" : {
+        "c" : [
+            [
+                {
+                    "$maxElement" : 1
+                },
+                {
+                    "$minElement" : 1
+                }
+            ]
+        ]
+    },
+    "server" : "denis-home:27017"
+}
+> db.fubar.find({'a':{'$lt':10000}, 'b':{'$gt': 5000}}, {'a':1, 'c':1}).sort({'c':-1}).hint('a_1_b_1_c_-1').explain()
+{
+    "cursor" : "BtreeCursor a_1_b_1_c_-1",
+    "isMultiKey" : false,
+    "n" : 9571,
+    "nscannedObjects" : 9571,
+    "nscanned" : 10074,
+    "nscannedObjectsAllPlans" : 9571,
+    "nscannedAllPlans" : 10074,
+    "scanAndOrder" : true,
+    "indexOnly" : false,
+    "nYields" : 0,
+    "nChunkSkips" : 0,
+    "millis" : 67,
+    "indexBounds" : {
+        "a" : [
+            [
+                -1.7976931348623157e+308,
+                10000
+            ]
+        ],
+        "b" : [
+            [
+                5000,
+                1.7976931348623157e+308
+            ]
+        ],
+        "c" : [
+            [
+                {
+                    "$maxElement" : 1
+                },
+                {
+                    "$minElement" : 1
+                }
+            ]
+        ]
+    },
+    "server" : "denis-home:27017"
+}
+
+I suppose the right answers are: a_1_b_1, a_1_c_1, a_1_b_1_c_-1. Using _id_
+and c_1 has no effect.
+
+
+
+Comments on «MongoDB for DBA. FInal Exam. Question 5. My Answer »
+=================================================================
+
+ Dmitriy
+December 15, 2012 at 09:12
+First, the organizers of the course were asked not to discuss and lay out the
+answers to the final exam before the end of the course.
+Second, the solution of this task you have is incorrect.
+
+Reply
+ szymek
+April 11, 2013 at 19:57
+What about c_1 index? In this case cursor is also BtreeCursor which indicates
+that query uses index. In my opinion all of answers except '_id_' are correct.
